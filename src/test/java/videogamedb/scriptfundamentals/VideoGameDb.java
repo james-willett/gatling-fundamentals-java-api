@@ -18,8 +18,7 @@ public class VideoGameDb extends Simulation {
 
             .exec(http("Get all video games - 1st call")
                     .get("/videogame")
-                    .check(status().is(200))
-                    .check(jsonPath("$[?(@.id==1)].name").is("Resident Evil 4")))
+                    .check(status().is(200)))
             .pause(5)
 
             .exec(http("Get specific game")
