@@ -17,15 +17,19 @@ public class VideoGameDb extends Simulation {
     private ScenarioBuilder scn = scenario("Video Game Db - Section 5 code")
 
             .exec(http("Get all video games - 1st call")
-                    .get("/videogame"))
+                    .get("/videogame")
+                    .check(status().is(200))
+                    .check(jsonPath("$[?(@.id==1)].name").is("Resident Evil 4")))
             .pause(5)
 
             .exec(http("Get specific game")
-                    .get("/videogame/1"))
+                    .get("/videogame/1")
+                    .check(status().in(200, 201, 202)))
             .pause(1, 10)
 
             .exec(http("get all video games - 2nd call")
-                    .get("/videogame"))
+                    .get("/videogame")
+                    .check(status().not(404), status().not(500)))
             .pause(Duration.ofMillis(4000));
 
     {
