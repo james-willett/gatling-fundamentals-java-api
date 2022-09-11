@@ -4,6 +4,7 @@ import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
 
 import java.time.Duration;
+import java.util.List;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
@@ -19,7 +20,7 @@ public class VideoGameDb extends Simulation {
             .exec(http("Get all video games - 1st call")
                     .get("/videogame")
                     .check(status().is(200))
-                    .check(jsonPath("$[?(@.id==1)].name").is("Resident Evil 4")))
+                    .check(jmesPath("[? id == `1`].name").ofList().is(List.of("Resident Evil 4"))))
             .pause(5)
 
             .exec(http("Get specific game")
