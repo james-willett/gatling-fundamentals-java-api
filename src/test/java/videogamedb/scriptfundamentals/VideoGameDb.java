@@ -17,21 +17,21 @@ public class VideoGameDb extends Simulation {
 
     private ScenarioBuilder scn = scenario("Video Game Db - Section 5 code")
 
-            .exec(http("Get all video games - 1st call")
-                    .get("/videogame")
-                    .check(status().is(200))
-                    .check(jmesPath("[? id == `1`].name").ofList().is(List.of("Resident Evil 4"))))
-            .pause(5)
-
             .exec(http("Get specific game")
                     .get("/videogame/1")
-                    .check(status().in(200, 201, 202)))
+                    .check(status().in(200, 201, 202))
+                    .check(jmesPath("name").is("Resident Evil 4")))
             .pause(1, 10)
 
-            .exec(http("get all video games - 2nd call")
+            .exec(http("get all video games")
                     .get("/videogame")
-                    .check(status().not(404), status().not(500)))
-            .pause(Duration.ofMillis(4000));
+                    .check(status().not(404), status().not(500))
+                    .check(jmesPath("[1].id").saveAs("gameId")))
+            .pause(Duration.ofMillis(4000))
+
+            .exec(http("Get specific game with Id - #{gameId}")
+                    .get("/videogame/#{gameId}")
+                    .check(jmesPath("name").is("Gran Turismo 3")));
 
     {
         setUp(
