@@ -31,7 +31,8 @@ public class VideoGameDb extends Simulation {
 
             .exec(http("Get specific game with Id - #{gameId}")
                     .get("/videogame/#{gameId}")
-                    .check(jmesPath("name").is("Gran Turismo 3")));
+                    .check(jmesPath("name").is("Gran Turismo 3"))
+                    .check(bodyString().saveAs("responseBody")));
 
     {
         setUp(
