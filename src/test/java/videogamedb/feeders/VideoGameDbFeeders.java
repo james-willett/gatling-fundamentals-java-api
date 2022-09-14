@@ -12,13 +12,13 @@ public class VideoGameDbFeeders extends Simulation {
             .baseUrl("https://videogamedb.uk/api")
             .acceptHeader("application/json");
 
-    private static FeederBuilder.FileBased<String> csvFeeder = csv("data/gameCsvFile.csv").circular();
+    private static FeederBuilder.FileBased<Object> jsonFeeder = jsonFile("data/gameJsonFile.json").random();
 
     private static ChainBuilder getSpecificGame =
-            feed(csvFeeder)
-                    .exec(http("Get video game with name - #{gameName}")
-                    .get("/videogame/#{gameId}")
-                            .check(jmesPath("name").isEL("#{gameName}")));
+            feed(jsonFeeder)
+                    .exec(http("Get video game with name - #{name}")
+                    .get("/videogame/#{id}")
+                            .check(jmesPath("name").isEL("#{name}")));
 
     private ScenarioBuilder scn = scenario("Video Game Db - Section 6 code")
             .repeat(10).on(
