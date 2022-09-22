@@ -17,7 +17,8 @@ public class VideoGameDbFeeders extends Simulation {
 
     private HttpProtocolBuilder httpProtocol = http
             .baseUrl("https://videogamedb.uk/api")
-            .acceptHeader("application/json");
+            .acceptHeader("application/json")
+            .contentTypeHeader("application/json");
 
     public static LocalDate randomDate() {
         int hundredYears = 100 * 365;
@@ -46,14 +47,32 @@ public class VideoGameDbFeeders extends Simulation {
     }
             ).iterator();
 
-    private static ChainBuilder getSpecificGame =
+    private static ChainBuilder authenticate =
+            exec(http("Authenticate")
+                    .post("/authenticate")
+                    .body(StringBody("{\n" +
+                            "  \"password\": \"admin\",\n" +
+                            "  \"username\": \"admin\"\n" +
+                            "}"))
+                    .check(jmesPath("token").saveAs("jwtToken")));
+
+    private static ChainBuilder createNewGame =
             feed(customFeeder)
-                    .exec(http("Get video game with id - #{gameId}")
-                    .get("/videogame/#{gameId}"));
+                    .exec(http("Create New Game - #{gameName}")
+                            .post("/videogame")
+                            .header("authorization", "Bearer #{jwtToken}")
+                            .body(ElFileBody("bodies/newGameTemplate.json")).asJson()
+                            .check(bodyString().saveAs("responseBody")))
+                    .exec(session -> {
+                        System.out.println(session.getString("responseBody"));
+                        return session;
+                    });
+
 
     private ScenarioBuilder scn = scenario("Video Game Db - Section 6 code")
+            .exec(authenticate)
             .repeat(10).on(
-                    exec(getSpecificGame)
+                    exec(createNewGame)
                             .pause(1)
             );
 
