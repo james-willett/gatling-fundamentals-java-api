@@ -31,8 +31,7 @@ public class VideoGameDbSimulations extends Simulation {
         setUp(
                 scn.injectOpen(
                         nothingFor(5),
-                        atOnceUsers(5),
-                        rampUsers(10).during(20)
+                        rampUsersPerSec(1).to(5).during(20).randomized()
                 ).protocols(httpProtocol)
         );
     }
