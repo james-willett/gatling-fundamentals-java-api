@@ -17,7 +17,7 @@ public class VideoGameDbFullTest extends Simulation {
     // RUNTIME PARAMETERS
     private static final int USER_COUNT = Integer.parseInt(System.getProperty("USERS", "5"));
     private static final int RAMP_DURATION = Integer.parseInt(System.getProperty("RAMP_DURATION", "10"));
-    private static final int TEST_DURATION = Integer.parseInt(System.getProperty("TEST_DURATION", "20"));
+    private static final int TEST_DURATION = Integer.parseInt(System.getProperty("TEST_DURATION", "60"));
 
     // FEEDER FOR TEST - CSV, JSON etc.
     private static FeederBuilder.FileBased<Object> jsonFeeder = jsonFile("data/gameJsonFile.json").random();
